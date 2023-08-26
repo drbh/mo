@@ -37,24 +37,25 @@ export default class PushService {
     }
     console.log("Sending POST", sub);
 
+    const _body = {
+      endpoint: sub.endpoint,
+      keys: {
+        p256dh: sub.keys.p256dh,
+        auth: sub.keys.auth,
+      },
+      sentence: "Hello World!",
+    };
+
+    console.log("Sending POST", _body);
+
     const options = {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        endpoint: sub.endpoint,
-        expirationTime: sub.expirationTime,
-        keys: {
-          p256dh: sub.keys.p256dh,
-          auth: sub.keys.auth,
-        },
-        sentence: "Hello World!",
-      }),
+      body: JSON.stringify(_body),
     };
 
-    console.log("Sending POST", options);
-
     fetch("https://king-pusha.fly.dev/push", options)
-      .then((response) => response.json())
+      .then((response) => response.text())
       .then((response) => console.log(response))
       .catch((err) => console.error(err));
   }
