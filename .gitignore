@@ -1,3 +1,4 @@
 parking
 **.DS_Store
 tmp.db
+.env
