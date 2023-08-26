@@ -6,7 +6,7 @@ export default defineConfig({
   plugins: [svelte()],
   resolve: {
     alias: {
-      $common: "../common",
+      $common: "../../common",
     },
   },
 });
