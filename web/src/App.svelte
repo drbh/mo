@@ -1,8 +1,8 @@
 <script lang="ts">
   import { onMount } from "svelte";
   import { writable } from "svelte/store";
-  import APIClient from "../../common/api.ts";
-  import PushService from "../../common/push.ts";
+  import APIClient from "../common/api.ts";
+  import PushService from "../common/push.ts";
 
   const checkinsList = writable([]); // Store to hold checkins
   const topicsList = writable([]); // Store to hold available topics
