@@ -1,3 +1,5 @@
+// @ts-nocheck
+
 // @ts-ignore
 import express, { NextFunction, Request, Response } from "npm:express@4.18.2";
 import PushService from "../common/push.ts";
@@ -106,9 +108,12 @@ const reqLogger = function (req: Request, _res: Response, next: NextFunction) {
 app.use(reqLogger);
 app.use(express.json()); // Support for parsing JSON body
 
-// allow cors from :5173
+const allowedOrigins = Deno.env.get("ALLOW_ORIGIN");
+
+console.log("Allowed origins", allowedOrigins);
+
 app.use(function (_req, res, next) {
-  res.header("Access-Control-Allow-Origin", "http://127.0.0.1:5173");
+  res.header("Access-Control-Allow-Origin", allowedOrigins);
   res.header(
     "Access-Control-Allow-Headers",
     "Origin, X-Requested-With, Content-Type, Accept"

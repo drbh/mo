@@ -3,7 +3,7 @@ import APIClient from "../common/api.ts";
 
 // @ts-ignore ts-ignore-next-line
 const main = async () => {
-  const client = new APIClient();
+  const client = new APIClient("http://localhost:3000");
   const user = await client.createUser("John Doe");
   const topic = await client.createCheckinTopic(user.id, "Daily Workout");
   await client.createDailyCheckin(topic.id);

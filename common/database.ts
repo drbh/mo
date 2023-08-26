@@ -37,7 +37,7 @@ class DatabaseService {
       "DELETE FROM pending_notifications WHERE id = ?",
   };
 
-  db: typeof DB;
+  db: any;
 
   constructor() {
     // Open a database to be held in memory (or change to file.db for file-based database)

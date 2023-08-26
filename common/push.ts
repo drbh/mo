@@ -1,3 +1,5 @@
+// @ts-nocheck
+
 export default class PushService {
   private webServiceUrl: string;
   private webServiceId: string;

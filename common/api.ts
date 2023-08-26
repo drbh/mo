@@ -1,8 +1,6 @@
 // @ts-ignore ts-ignore-next-line
 import { Rule } from "./rules.ts";
 
-const BASE_URL = "http://localhost:3000";
-
 type User = {
   id: number;
   name: string;
@@ -21,14 +19,20 @@ type Checkin = {
 };
 
 class APIClient {
-  private static async fetchJson(endpoint: string, options?: RequestInit) {
-    const response = await fetch(`${BASE_URL}${endpoint}`, options);
+  BASE_URL: string;
+
+  constructor(url: string) {
+    this.BASE_URL = url;
+  }
+
+  private async fetchJson(endpoint: string, options?: RequestInit) {
+    const response = await fetch(`${this.BASE_URL}${endpoint}`, options);
     const data = await response.json();
     return data;
   }
 
   async createUser(name: string) {
-    const data = await APIClient.fetchJson("/users", {
+    const data = await this.fetchJson("/users", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -43,7 +47,7 @@ class APIClient {
   }
 
   async createCheckinTopic(userId: number, topicName: string) {
-    const data = await APIClient.fetchJson(`/checkin-topic/${userId}`, {
+    const data = await this.fetchJson(`/checkin-topic/${userId}`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -59,14 +63,14 @@ class APIClient {
   }
 
   async createDailyCheckin(topicId: number) {
-    const data = await APIClient.fetchJson(`/daily-checkin/${topicId}`, {
+    const data = await this.fetchJson(`/daily-checkin/${topicId}`, {
       method: "POST",
     });
     return data;
   }
 
   async getUser(userId: number) {
-    const data = await APIClient.fetchJson(`/users/${userId}`);
+    const data = await this.fetchJson(`/users/${userId}`);
     const user: User = {
       id: data[0][0],
       name: data[0][1],
@@ -75,7 +79,7 @@ class APIClient {
   }
 
   async getUserTopics(userId: number) {
-    const data = await APIClient.fetchJson(`/users/${userId}/checkin-topics`);
+    const data = await this.fetchJson(`/users/${userId}/checkin-topics`);
     const checkinTopics: Array<CheckinTopic> = data.map((row: any) => ({
       id: row[0],
       user_id: row[1],
@@ -85,7 +89,7 @@ class APIClient {
   }
 
   async getUserCheckins(userId: number) {
-    const data = await APIClient.fetchJson(`/users/${userId}/checkins`);
+    const data = await this.fetchJson(`/users/${userId}/checkins`);
     const checkins: Array<Checkin> = data.map((row: any) => ({
       id: row[0],
       topic_id: row[1],
@@ -95,7 +99,7 @@ class APIClient {
   }
 
   async createRule(type: string, value: string, topic: string) {
-    const data = await APIClient.fetchJson(`/rules`, {
+    const data = await this.fetchJson(`/rules`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -106,7 +110,7 @@ class APIClient {
   }
 
   async getRules() {
-    const data = await APIClient.fetchJson(`/rules`);
+    const data = await this.fetchJson(`/rules`);
     const rules: Rule[] = data.map((row: any) => ({
       id: row[0],
       type: row[1],
@@ -117,7 +121,7 @@ class APIClient {
   }
 
   async updateRule(ruleId: number, type: string, value: string, topic: string) {
-    const data = await APIClient.fetchJson(`/rules/${ruleId}`, {
+    const data = await this.fetchJson(`/rules/${ruleId}`, {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",
@@ -128,14 +132,14 @@ class APIClient {
   }
 
   async deleteRule(ruleId: number) {
-    const data = await APIClient.fetchJson(`/rules/${ruleId}`, {
+    const data = await this.fetchJson(`/rules/${ruleId}`, {
       method: "DELETE",
     });
     return data;
   }
 
   async getPendingNotifications() {
-    const data = await APIClient.fetchJson(`/pending-notifications`);
+    const data = await this.fetchJson(`/pending-notifications`);
     const notifications: any[] = data.map((row: any) => ({
       id: row[0],
       type: row[1],
@@ -147,7 +151,7 @@ class APIClient {
   }
 
   async deletePendingNotification(notificationId: number) {
-    const data = await APIClient.fetchJson(
+    const data = await this.fetchJson(
       `/pending-notifications/${notificationId}`,
       {
         method: "DELETE",
@@ -161,7 +165,7 @@ class APIClient {
     sent: boolean,
     ack: boolean
   ) {
-    const data = await APIClient.fetchJson(
+    const data = await this.fetchJson(
       `/pending-notifications/${notificationId}`,
       {
         method: "PUT",

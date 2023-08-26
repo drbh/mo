@@ -14,8 +14,10 @@
   let subInfo = ""; //
   let currentUser; // For tracking the current user
 
+  // const client = new APIClient("http://localhost:3000");
+  const client = new APIClient("https://rough-wind-2313.fly.dev");
+
   onMount(async () => {
-    const client = new APIClient();
     currentUser = await client.getUser(1);
     loadCheckins(currentUser.id);
     loadTopics(); // Fetch existing topics
@@ -23,7 +25,6 @@
   });
 
   async function loadCheckins(userId: number) {
-    const client = new APIClient();
     const checkins = await client.getUserCheckins(userId);
     // Group the checkins by topic_id
     let groupedCheckins = checkins.reduce((acc, checkin) => {
@@ -41,24 +42,18 @@
   }
 
   async function loadTopics() {
-    const client = new APIClient();
     const topics = await client.getUserTopics(1);
-    console.log({ topics });
     topicsList.set(topics);
   }
 
   async function loadRulesAndNotifications() {
-    const client = new APIClient();
     const rules = await client.getRules();
     const pendingNotifications = await client.getPendingNotifications();
-    console.log({ rules });
     rulesList.set(rules);
-    console.log({ pendingNotifications });
     pendingNotificationsList.set(pendingNotifications);
   }
 
   async function addCheckin() {
-    const client = new APIClient();
     let topic;
     if ($selectedTopic === "new") {
       topic = await client.createCheckinTopic(currentUser.id, newTopicValue);
@@ -70,7 +65,6 @@
   }
 
   async function addRule() {
-    const client = new APIClient();
     const [_type, time, topic] = newRuleValue.split(",");
     if (!_type || !time || !topic) {
       alert("Please enter a valid rule");
@@ -81,19 +75,16 @@
   }
 
   async function removeRule(rule) {
-    const client = new APIClient();
     await client.deleteRule(rule.id);
     loadRulesAndNotifications(); // Refresh rules and notifications
   }
 
   async function removePendingNotification(notification) {
-    const client = new APIClient();
     await client.deletePendingNotification(notification.id);
     loadRulesAndNotifications(); // Refresh rules and notifications
   }
 
   async function updatePendingNotification(notification) {
-    const client = new APIClient();
     await client.updatePendingNotification(
       notification.id,
       notification.sent,
@@ -113,9 +104,20 @@
     const _subInfo = JSON.parse(subInfo);
     console.log({ _subInfo });
   }
+
+  async function createUser() {
+    const user = await client.createUser("drbh");
+    const topic = await client.createCheckinTopic(user.id, "Daily Workout");
+    console.log({ user });
+    console.log({ topic });
+  }
 </script>
 
 <main>
+  <div class="input-container">
+    <button class="modern-button" on:click={createUser}>Create User</button>
+  </div>
+
   <div class="card">
     <!-- Add Checkin Dropdown and Input -->
     <div class="input-container">
