@@ -1,0 +1,6 @@
+{
+  "name": "mo",
+  "scripts": {
+    "build": "cd web && vite build"
+  }
+}
